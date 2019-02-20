@@ -1,6 +1,6 @@
 {
   "name": "google-pubsub-mock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Transparently overrides @googlecloud/pub-sub for local testing ",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,9 @@
     "mock",
     "stub"
   ],
-  "files":["index.js"],
+  "files": [
+    "index.js"
+  ],
   "author": "naugtur@gmail.com",
   "license": "Apache-2.0",
   "bugs": {
