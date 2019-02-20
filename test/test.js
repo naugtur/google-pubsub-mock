@@ -19,7 +19,8 @@ const pubsub2 = new PubSub();
 const subscription = pubsub2.subscription(subscriptionName);
 
 subscription.on("message", message => {
-  assert.deepEqual(message, { data: '{"a":1}', attributes: { attribute1: 1 } });
+  assert.deepEqual(message.attributes, { attribute1: 1 });
+  assert.deepEqual(message.data.toString(), '{"a":1}');
   message.ack()
 });
 

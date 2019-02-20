@@ -16,6 +16,7 @@
     "mock",
     "stub"
   ],
+  "files":["index.js"],
   "author": "naugtur@gmail.com",
   "license": "Apache-2.0",
   "bugs": {
@@ -25,5 +26,7 @@
   "dependencies": {
     "sinon": "^7.2.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@google-cloud/pubsub": "^0.24.1"
+  }
 }
