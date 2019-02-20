@@ -1,0 +1,29 @@
+{
+  "name": "google-pubsub-mock",
+  "version": "1.0.0",
+  "description": "Transparently overrides @googlecloud/pub-sub for local testing ",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naugtur/google-pubsub-mock.git"
+  },
+  "keywords": [
+    "googlecloud",
+    "pubsub",
+    "mock",
+    "stub"
+  ],
+  "author": "naugtur@gmail.com",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/naugtur/google-pubsub-mock/issues"
+  },
+  "homepage": "https://github.com/naugtur/google-pubsub-mock#readme",
+  "dependencies": {
+    "sinon": "^7.2.3"
+  },
+  "devDependencies": {}
+}
