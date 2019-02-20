@@ -14,9 +14,11 @@ const mockInstance = mock.setUp({
     }
 });
 //publish shorthand function
-mockInstance.publish({ topic, subscription, message });
-//restore when finished using
-mockInstance.sinonSandbox.restore()
+mockInstance.publish(topic, message, attributes);
+//use sinon features
+mockInstance.publish.called //publish is a sinon stub
+mockInstance.ack.called //ack is a sinon stub and the same one is added to all messages
+mockInstance.sinonSandbox.restore() //clean up the mock, returns PubSub to its previous state.
 ```
 
 if `PubSub` refeerence is not provided, `require("@google-cloud/pubsub")` is called. IF dependency versions matched and got deduplicated in node_modules, it should get the same instance, but that's generally not guaranteed (and not stable long term in my experience) 
@@ -34,3 +36,5 @@ uses sinon stubs
 - topic().publish()
 - subscribtion().on("message",...)
 - message.ack()
+
+Other methods are not yet mocked and will run the actual implementation, which you'll notice from the errors you'd be getting form `@googlecloud/pubsub`
