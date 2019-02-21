@@ -13,9 +13,11 @@ module.exports = {
     }
 
     const subscriptionHandlers = {};
+    let mostRecentPublish;
     sinonSandbox = sinonSandbox || sinon.createSandbox();
     const ackStub = sinon.stub();
     const pubStub = sinonSandbox.stub((topic, message, attributes) => {
+      mostRecentPublish = {topic, message, attributes};
       topics[topic].subscriptions.forEach(subscriptionName => {
         subscriptionHandlers[subscriptionName].forEach(subHandler =>
           subHandler(createMessageFrom(message, attributes, ackStub))
@@ -43,7 +45,10 @@ module.exports = {
     return {
       sinonSandbox: sinonSandbox,
       publish: pubStub,
-      ackStub
+      ackStub,
+      retryMostRecentPublish() {
+        pubStub(mostRecentPublish.topic, mostRecentPublish.message, mostRecentPublish.attributes)
+      }
     };
   }
 };

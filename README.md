@@ -15,6 +15,9 @@ const mockInstance = mock.setUp({
 });
 //publish shorthand function
 mockInstance.publish(topic, message, attributes);
+//helper for testing multiple delivery attempts
+mockInstance.retryMostRecentPublish()
+
 //use sinon features
 mockInstance.publish.called //publish is a sinon stub
 mockInstance.ack.called //ack is a sinon stub and the same one is added to all messages
