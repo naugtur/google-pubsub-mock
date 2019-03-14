@@ -4,6 +4,8 @@ const { PubSub } = require("@google-cloud/pubsub");
 const topicName = "testTopic";
 const subscriptionName = "testSub";
 
+console.log("-> test basic functionality");
+
 const testSubjectMock = require("../index").setUp({
   topics: {
     [topicName]: {
@@ -35,10 +37,13 @@ publisher.publish(
   { attribute1: 1 }
 );
 
+console.log("-> test retryMostRecentPublish");
+
 testSubjectMock.retryMostRecentPublish()
 
 assert.equal(deliveryCount, 2)
 
+console.log("-> test instance caching protection");
 
 // test suite cleanup simulation
 testSubjectMock.sinonSandbox.restore();
@@ -62,5 +67,6 @@ try{
   assert(e.message.match(/reference to 'on' function/))
 }
 
+console.log("-> tests finished");
 
 console.log("Feel free to contribute more tests :*");

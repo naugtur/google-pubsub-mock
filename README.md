@@ -22,10 +22,12 @@ mockInstance.retryMostRecentPublish()
 mockInstance.publish.called //publish is a sinon stub
 mockInstance.ack.called //ack is a sinon stub and the same one is added to all messages
 mockInstance.sinonSandbox.restore() //clean up the mock, returns PubSub to its previous state.
+mockInstance.clearState() //remove all state created by subscriptions and messages to avoid affecting another test suite while reusing one setup
 ```
 
-if `PubSub` refeerence is not provided, `require("@google-cloud/pubsub")` is called. IF dependency versions matched and got deduplicated in node_modules, it should get the same instance, but that's generally not guaranteed (and not stable long term in my experience) 
+if `PubSub` reference is not provided, `require("@google-cloud/pubsub")` is called. **IF** dependency versions matched and got deduplicated in node_modules, it should get the same instance, but that's generally not guaranteed (and not stable long term in my experience) 
 
+Your code might store references to the topic or subscription objects. That's why it is recommended to call `setUp` only once and use `clearState` before or after each test
 
 ## Support
 
