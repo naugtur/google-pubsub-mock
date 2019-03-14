@@ -67,6 +67,10 @@ try{
   assert(e.message.match(/reference to 'on' function/))
 }
 
+console.log("-> test cleanup");
+testSubjectMock.clearState();
+assert.equal(testSubjectMock.ackStub.callCount, 0)
+
 console.log("-> tests finished");
 
 console.log("Feel free to contribute more tests :*");
