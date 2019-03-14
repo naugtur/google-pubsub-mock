@@ -25,7 +25,7 @@ module.exports = {
     const pubStub = sinonSandbox.stub().callsFake((topic, message, attributes) => {
       mostRecentPublish = {topic, message, attributes};
       topics[topic].subscriptions.forEach(subscriptionName => {
-        subscriptionHandlers[subscriptionName].forEach(subHandler =>
+        (subscriptionHandlers[subscriptionName] || []).forEach(subHandler =>
           subHandler(createMessageFrom(message, attributes, ackStub))
         );
       });
@@ -65,8 +65,8 @@ module.exports = {
     function clearState(){
       subscriptionHandlers = {}
       mostRecentPublish = undefined
-      ackStub.reset()
-      pubStub.reset()
+      ackStub.resetHistory()
+      pubStub.resetHistory()
     }
 
     return {
