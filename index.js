@@ -25,24 +25,27 @@ module.exports = {
     const ackStub = sinonSandbox.stub().callsFake(function() {
       debug(`ack called on message id: ${this.id}`);
     });
+
+    function publishInternal({topic, message, attributes, id}){
+      const messageObject = createMessageFrom(message, attributes, ackStub, id);
+      mostRecentPublish = { topic, message, attributes, id: messageObject.id };
+
+      debug(
+        `publish ${topic}, message id: ${messageObject.id} is sent to ${
+          topics[topic].subscriptions.length
+        } subs`
+      );
+
+      topics[topic].subscriptions.forEach(subscriptionName => {
+        (subscriptionHandlers[subscriptionName] || []).forEach(subHandler =>
+          subHandler(messageObject)
+        );
+      });
+    }
+
     const pubStub = sinonSandbox
       .stub()
-      .callsFake((topic, message, attributes) => {
-        mostRecentPublish = { topic, message, attributes };
-        const messageObject = createMessageFrom(message, attributes, ackStub);
-
-        debug(
-          `publish ${topic}, message id: ${messageObject.id} is sent to ${
-            topics[topic].subscriptions.length
-          } subs`
-        );
-
-        topics[topic].subscriptions.forEach(subscriptionName => {
-          (subscriptionHandlers[subscriptionName] || []).forEach(subHandler =>
-            subHandler(messageObject)
-          );
-        });
-      });
+      .callsFake((topic, message, attributes) => publishInternal({topic, message, attributes}));
 
     latestStubbedSetupId = currentSetupId;
 
@@ -97,23 +100,19 @@ module.exports = {
       publish: pubStub,
       ackStub,
       retryMostRecentPublish() {
-        pubStub(
-          mostRecentPublish.topic,
-          mostRecentPublish.message,
-          mostRecentPublish.attributes
-        );
+        publishInternal(mostRecentPublish);
       },
       clearState
     };
   }
 };
 
-function createMessageFrom(message, attributes, ack) {
+function createMessageFrom(message, attributes, ack, id) {
   // TODO: implement something smarter
   const data = Buffer.from(message.toString()); //Works with string and buffer-alike types.
 
   return {
-    id: Math.random()
+    id: id || Math.random()
       .toFixed(12)
       .substring(2),
     data,

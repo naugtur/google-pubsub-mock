@@ -20,8 +20,10 @@ const publisher = pubsub1.topic(topicName);
 const pubsub2 = new PubSub();
 const subscription = pubsub2.subscription(subscriptionName);
 let deliveryCount = 0;
+let mostRecentReceivedId;
 
 subscription.on("message", message => {
+  mostRecentReceivedId = message.id
   assert.deepEqual(message.attributes, { attribute1: 1 });
   assert.equal(message.data.toString(), '{"a":1}');
   deliveryCount++;
@@ -39,7 +41,10 @@ publisher.publish(
 
 console.log("-> test retryMostRecentPublish");
 
+const idBeforeRetry = mostRecentReceivedId
 testSubjectMock.retryMostRecentPublish();
+
+assert.equal(idBeforeRetry, mostRecentReceivedId) //retry should maintain the same id
 
 assert.equal(deliveryCount, 2);
 
