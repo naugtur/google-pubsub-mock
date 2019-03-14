@@ -4,7 +4,7 @@ const { PubSub } = require("@google-cloud/pubsub");
 const topicName = "testTopic";
 const subscriptionName = "testSub";
 
-const testSubjectStub = require("../index").setUp({
+const testSubjectMock = require("../index").setUp({
   topics: {
     [topicName]: {
       subscriptions: [subscriptionName]
@@ -21,7 +21,7 @@ let deliveryCount = 0;
 
 subscription.on("message", message => {
   assert.deepEqual(message.attributes, { attribute1: 1 });
-  assert.deepEqual(message.data.toString(), '{"a":1}');
+  assert.equal(message.data.toString(), '{"a":1}');
   deliveryCount++;
   message.ack()
 });
@@ -35,8 +35,32 @@ publisher.publish(
   { attribute1: 1 }
 );
 
-testSubjectStub.retryMostRecentPublish()
+testSubjectMock.retryMostRecentPublish()
 
 assert.equal(deliveryCount, 2)
+
+
+// test suite cleanup simulation
+testSubjectMock.sinonSandbox.restore();
+
+//creating another instance of mocks
+const testSubjectMock2 = require("../index").setUp({
+  topics: {
+    [topicName]: {
+      subscriptions: [subscriptionName]
+    }
+  }
+});
+
+assert.throws(()=>{
+  subscription.on("whatevs", ()=>{})
+})
+
+try{
+  subscription.on("whatevs", ()=>{})
+} catch(e){
+  assert(e.message.match(/reference to 'on' function/))
+}
+
 
 console.log("Feel free to contribute more tests :*");
