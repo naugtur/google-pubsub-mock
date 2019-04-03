@@ -25,9 +25,12 @@ module.exports = {
     const ackStub = sinonSandbox.stub().callsFake(function() {
       debug(`ack called on message id: ${this.id}`);
     });
+    const nackStub = sinonSandbox.stub().callsFake(function() {
+      debug(`nack called on message id: ${this.id}`);
+    });
 
     function publishInternal({topic, message, attributes, id}){
-      const messageObject = createMessageFrom(message, attributes, ackStub, id);
+      const messageObject = createMessageFrom(message, attributes, ackStub, nackStub, id);
       mostRecentPublish = { topic, message, attributes, id: messageObject.id };
 
       debug(
@@ -92,6 +95,7 @@ module.exports = {
       subscriptionHandlers = {};
       mostRecentPublish = undefined;
       ackStub.resetHistory();
+      nackStub.resetHistory();
       pubStub.resetHistory();
     }
 
@@ -99,6 +103,7 @@ module.exports = {
       sinonSandbox: sinonSandbox,
       publish: pubStub,
       ackStub,
+      nackStub,
       retryMostRecentPublish() {
         publishInternal(mostRecentPublish);
       },
@@ -107,7 +112,7 @@ module.exports = {
   }
 };
 
-function createMessageFrom(message, attributes, ack, id) {
+function createMessageFrom(message, attributes, ack, nack, id) {
   // TODO: implement something smarter
   const data = Buffer.from(message.toString()); //Works with string and buffer-alike types.
 
@@ -117,6 +122,7 @@ function createMessageFrom(message, attributes, ack, id) {
       .substring(2),
     data,
     attributes: attributes || {},
-    ack
+    ack,
+    nack
   };
 }
