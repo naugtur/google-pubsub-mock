@@ -42,4 +42,4 @@ uses sinon stubs
 - subscribtion().on("message",...)
 - message.ack()
 
-Other methods are not yet mocked and will run the actual implementation, which you'll notice from the errors you'd be getting form `@googlecloud/pubsub`
+Other methods are not yet mocked and will run the actual implementation, which you'll notice from the errors you'd be getting from `@googlecloud/pubsub`
