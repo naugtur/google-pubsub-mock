@@ -8,7 +8,7 @@ const mockInstance = mock.setUp({
   PubSub: // the PubSub reference you're using ,
   sinonSandbox: // (optional) sinon sandbox instance you're using,
   topics: { // Topics and their subscriptions
-      "topicname":{,
+      "topicname":{
         subscriptions: [subscriptionName]
       }
     }
